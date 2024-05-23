@@ -4,6 +4,7 @@ import { AppProps } from 'next/app';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider, createTheme, responsiveFontSizes } from '@mui/material/styles';
 import Header from '../components/Header';
+import '../styles/globals.css'; // Import global styles here
 
 let theme = createTheme({
   palette: {

@@ -10,10 +10,10 @@ const Header: React.FC = () => {
 
   return (
     <AppBar position="static">
-      <Toolbar style={{ display: 'flex', justifyContent: 'space-between' }}>
+      <Toolbar style={{ display: 'flex', justifyContent: 'space-between', height: '64px' }}>
         <Link href="/" passHref>
-          <div style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', color: 'inherit' }}>
-            <Image src="/logo.png" alt="Logo" width={40} height={40} />
+          <div style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
+            <Image src="/logo.png" alt="Logo" layout="fixed" width={60} height={60} style={{ objectFit: 'contain' }} />
           </div>
         </Link>
         <div>

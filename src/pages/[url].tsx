@@ -69,7 +69,7 @@ const PollDetail: React.FC = () => {
   if (!poll) return <Typography>Loading...</Typography>;
 
   return (
-    <Container>
+    <Container className="container" style={{ marginTop: '80px' }}>
       <Card>
         <CardContent>
           <Typography variant="h4">{poll.title}</Typography>

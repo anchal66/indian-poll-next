@@ -80,7 +80,7 @@ const CreatePoll: React.FC = () => {
   };
 
   return (
-    <Container>
+    <Container className="container" style={{ marginTop: '80px' }}>
       <Typography variant="h4" gutterBottom>
         Create Poll
       </Typography>

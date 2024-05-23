@@ -14,20 +14,25 @@ const ShareButton: React.FC<ShareButtonProps> = ({ title, url, sharingMessage, i
   const defaultImageUrl = '/logo.png'; // Path to the default image in the public directory
 
   const handleShare = async () => {
-    const image = imageUrl || defaultImageUrl;
+    const fullMessage = `${sharingMessage}\n${url}`;
+
     if (navigator.share) {
       try {
         await navigator.share({
           title: title,
-          text: sharingMessage,
-          url: url,
-          files: [new File([image], 'image.png', { type: 'image/png' })]
+          text: fullMessage,
         });
       } catch (error) {
         console.error('Error sharing', error);
       }
     } else {
-      alert('Web Share API is not supported in your browser.');
+      // Fallback: Copy to clipboard
+      try {
+        await navigator.clipboard.writeText(fullMessage);
+        alert('Sharing message copied to clipboard');
+      } catch (error) {
+        console.error('Could not copy text: ', error);
+      }
     }
   };
 
