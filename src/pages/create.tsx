@@ -1,14 +1,29 @@
-// src/pages/create.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import { useRouter } from 'next/router';
 import { useAuth } from '../services/authService';
 import { createPoll, isPollUrlUnique } from '../services/pollService';
 import { TextField, Button, Container, Typography, Box, FormControlLabel, Switch } from '@mui/material';
 
+interface PollOption {
+  text: string;
+  votes: number;
+}
+
+interface PollData {
+  title: string;
+  description: string;
+  options: PollOption[];
+  sharingMessage: string;
+  creatorUid: string;
+  url: string;
+  requireSignIn: boolean;
+  imageUrl?: string;
+}
+
 const CreatePoll: React.FC = () => {
   const { user, googleSignIn } = useAuth();
   const router = useRouter();
-  const [pollData, setPollData] = useState({
+  const [pollData, setPollData] = useState<PollData>({
     title: '',
     description: '',
     options: [{ text: '', votes: 0 }, { text: '', votes: 0 }],
@@ -22,33 +37,33 @@ const CreatePoll: React.FC = () => {
 
   useEffect(() => {
     if (user) {
-      setPollData({ ...pollData, creatorUid: user.uid });
+      setPollData((prevData) => ({ ...prevData, creatorUid: user.uid }));
     }
   }, [user]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setPollData({ ...pollData, [name]: value });
+    setPollData((prevData) => ({ ...prevData, [name]: value }));
   };
 
   const handleOptionChange = (index: number, value: string) => {
     const options = [...pollData.options];
     options[index].text = value;
-    setPollData({ ...pollData, options });
+    setPollData((prevData) => ({ ...prevData, options }));
   };
 
   const addOption = () => {
-    setPollData({ ...pollData, options: [...pollData.options, { text: '', votes: 0 }] });
+    setPollData((prevData) => ({ ...prevData, options: [...prevData.options, { text: '', votes: 0 }] }));
   };
 
   const removeOption = (index: number) => {
     const options = pollData.options.filter((_, i) => i !== index);
-    setPollData({ ...pollData, options });
+    setPollData((prevData) => ({ ...prevData, options }));
   };
 
   const generateUrl = () => {
     const title = pollData.title.trim().toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').slice(0, 20);
-    setPollData({ ...pollData, url: title.replace(/-+$/, '') });
+    setPollData((prevData) => ({ ...prevData, url: title.replace(/-+$/, '') }));
   };
 
   const checkUrl = async () => {
@@ -61,7 +76,7 @@ const CreatePoll: React.FC = () => {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!user) {
       googleSignIn();
@@ -73,7 +88,7 @@ const CreatePoll: React.FC = () => {
       }
       createPoll(pollData).then(() => {
         router.push(`/${pollData.url}`);
-      }).catch((error: any) => {
+      }).catch((error) => {
         console.error('Error creating poll: ', error);
       });
     }
@@ -135,7 +150,7 @@ const CreatePoll: React.FC = () => {
           style={{ marginTop: 16 }}
         />
         <FormControlLabel
-          control={<Switch checked={pollData.requireSignIn} onChange={() => setPollData({ ...pollData, requireSignIn: !pollData.requireSignIn })} />}
+          control={<Switch checked={pollData.requireSignIn} onChange={() => setPollData((prevData) => ({ ...prevData, requireSignIn: !prevData.requireSignIn }))} />}
           label="Require Sign-In to Vote"
           style={{ marginTop: 16 }}
         />
