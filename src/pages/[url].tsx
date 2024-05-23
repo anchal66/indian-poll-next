@@ -22,6 +22,7 @@ import {
   useTheme,
 } from '@mui/material';
 import ShareButton from '../components/ShareButton';
+import { useSnackbar } from '@/context/SnackbarContext';
 
 interface PollDescriptionProps {
   description: string;
@@ -57,6 +58,7 @@ const PollPage: React.FC<PollPageProps> = ({ poll: initialPoll }) => {
   const [showCount, setShowCount] = useState<boolean>(false);
   const [hasVoted, setHasVoted] = useState<boolean>(false);
   const [shareUrl, setShareUrl] = useState('');
+  const { showMessage } = useSnackbar();
 
   const theme = useTheme();
 
@@ -85,8 +87,10 @@ const PollPage: React.FC<PollPageProps> = ({ poll: initialPoll }) => {
         const updatedPoll = await getPollByUrl(poll.url);
         setPoll({ ...updatedPoll, voters: updatedPoll.voters || [] });
         setHasVoted(true);
-      } catch (error) {
+        showMessage('Voted successfully!', 'success');
+      } catch (error: any) {
         console.error(error);
+        showMessage(error.message || String(error), 'error');
       }
       setOpen(false);
     }
