@@ -1,9 +1,9 @@
-// src/pages/index.tsx
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../services/authService';
 import { firestore } from '../lib/firebase';
 import { collection, onSnapshot } from 'firebase/firestore';
 import Link from 'next/link';
+import Head from 'next/head';
 import { Button, Container, Typography, Card, CardContent, Box, Grid } from '@mui/material';
 import ShareButton from '../components/ShareButton';
 
@@ -21,6 +21,22 @@ const Home: React.FC = () => {
 
   return (
     <Container className="container" style={{ marginTop: '80px' }}>
+      <Head>
+        <title>Indian Votes | India&#39;s largest Election Poll</title>
+        <meta name="description" content="Participate in the latest polls and make your voice heard on Indian Poll." />
+        <meta property="og:title" content="Indian Votes | India&#39;s largest Election Poll" />
+        <meta property="og:description" content="Participate in the latest polls and make your voice heard on Indian Poll." />
+        <meta property="og:image" content="/logo.png" />
+        <meta property="og:url" content="https://indianvotes.com" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Indian Poll" />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Indian Votes | India&#39;s largest Election Poll" />
+        <meta name="twitter:description" content="Participate in the latest polls and make your voice heard on Indian Poll." />
+        <meta name="twitter:image" content="/logo.png" />
+        <meta name="twitter:url" content="https://indianvotes.com" />
+      </Head>
       <Typography variant="h4" gutterBottom>
         Welcome to Indian Poll
       </Typography>
@@ -49,7 +65,7 @@ const Home: React.FC = () => {
                 <Grid item>
                   <ShareButton
                     title={poll.title}
-                    url={`${window.location.origin}/${poll.url}`}
+                    url={typeof window !== 'undefined' ? `${window.location.origin}/${poll.url}` : ''}
                     sharingMessage={poll.sharingMessage}
                     imageUrl={poll.imageUrl || '/logo.png'}
                   />

@@ -1,4 +1,3 @@
-// src/services/authService.ts
 import { auth } from '../lib/firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
