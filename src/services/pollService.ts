@@ -1,6 +1,6 @@
 // src/services/pollService.ts
 import { firestore } from '../lib/firebase';
-import { collection, addDoc, query, where, getDocs, doc, getDoc, updateDoc, deleteDoc, onSnapshot } from 'firebase/firestore';
+import { collection, addDoc, doc, deleteDoc, updateDoc, onSnapshot, query, where, getDocs, getDoc } from 'firebase/firestore';
 
 export const createPoll = (pollData: any) => {
   const pollsCollection = collection(firestore, 'polls');
@@ -29,26 +29,32 @@ export const votePoll = async (pollId: string, optionIndex: number, userId: stri
   const pollDoc = await getDoc(pollDocRef);
   if (pollDoc.exists()) {
     const pollData = pollDoc.data();
-    if (pollData?.requireSignIn) {
-      if (pollData?.voters?.includes(userId)) {
+    if (pollData['requireSignIn']) {
+      if (pollData['voters'] && pollData['voters'].includes(userId)) {
         throw new Error('User has already voted');
       } else {
-        const voters = pollData?.voters ? [...pollData.voters, userId] : [userId];
-        const options = pollData.options;
+        const voters = pollData['voters'] ? [...pollData['voters'], userId] : [userId];
+        const options = pollData['options'];
         options[optionIndex].votes = (options[optionIndex].votes || 0) + 1;
-        return updateDoc(pollDocRef, { options, voters });
+        return updateDoc(pollDocRef, {
+          options: options,
+          voters: voters
+        });
       }
     } else {
       // Handle voting without sign-in
-      const deviceVotes = JSON.parse(localStorage.getItem(pollId) || '[]');
-      if (deviceVotes.includes(optionIndex)) {
+      const deviceVotes = localStorage.getItem(pollId) || '[]';
+      const votedOptions = JSON.parse(deviceVotes);
+      if (votedOptions.length > 0) {
         throw new Error('Device has already voted');
       } else {
-        deviceVotes.push(optionIndex);
-        localStorage.setItem(pollId, JSON.stringify(deviceVotes));
-        const options = pollData.options;
+        votedOptions.push(optionIndex);
+        localStorage.setItem(pollId, JSON.stringify(votedOptions));
+        const options = pollData['options'];
         options[optionIndex].votes = (options[optionIndex].votes || 0) + 1;
-        return updateDoc(pollDocRef, { options });
+        return updateDoc(pollDocRef, {
+          options: options
+        });
       }
     }
   }

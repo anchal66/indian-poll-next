@@ -14,14 +14,21 @@ const PollDetail: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [showCount, setShowCount] = useState<boolean>(false);
+  const [hasVoted, setHasVoted] = useState<boolean>(false);
 
   useEffect(() => {
     if (url) {
       getPollByUrl(url as string).then(poll => {
         setPoll({ ...poll, voters: poll.voters || [] });
+        if (poll.requireSignIn && user) {
+          setHasVoted(poll.voters.includes(user.uid));
+        } else {
+          const deviceVotes = JSON.parse(localStorage.getItem(poll.id) || '[]');
+          setHasVoted(deviceVotes.length > 0);
+        }
       });
     }
-  }, [url]);
+  }, [url, user]);
 
   useEffect(() => {
     if (poll) {
@@ -32,33 +39,20 @@ const PollDetail: React.FC = () => {
 
   const handleVote = async () => {
     if (selectedOption !== null) {
-      if (user) {
-        try {
-          await votePoll(poll.id, selectedOption, user.uid);
-          const updatedPoll = await getPollByUrl(url as string);
-          setPoll({ ...updatedPoll, voters: updatedPoll.voters || [] });
-        } catch (error) {
-          console.error(error);
-        }
-      } else if (poll.requireSignIn) {
-        googleSignIn();
-      } else {
-        try {
-          await votePoll(poll.id, selectedOption, null);
-          const updatedPoll = await getPollByUrl(url as string);
-          setPoll({ ...updatedPoll, voters: updatedPoll.voters || [] });
-        } catch (error) {
-          console.error(error);
-        }
+      try {
+        await votePoll(poll.id, selectedOption, user ? user.uid : null);
+        const updatedPoll = await getPollByUrl(url as string);
+        setPoll({ ...updatedPoll, voters: updatedPoll.voters || [] });
+        setHasVoted(true);
+      } catch (error) {
+        console.error(error);
       }
       setOpen(false);
     }
   };
 
   const handleOpen = () => {
-    if (user && poll.voters.includes(user.uid)) {
-      alert('You have already voted in this poll.');
-    } else {
+    if (!hasVoted) {
       setOpen(true);
     }
   };
@@ -83,9 +77,16 @@ const PollDetail: React.FC = () => {
         <CardContent>
           <Typography variant="h4">{poll.title}</Typography>
           <Typography variant="body1" style={{ margin: '16px 0' }}>{poll.description}</Typography>
-          <Button variant="contained" color="primary" onClick={handleOpen} style={{ marginTop: 16 }} disabled={user && poll.voters.includes(user.uid)}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleOpen}
+            style={{ marginTop: 16 }}
+            disabled={hasVoted}
+          >
             Vote
           </Button>
+          {hasVoted && <Typography color="error" style={{ marginTop: 8 }}>You have already voted!</Typography>}
           <Typography style={{ marginTop: 16 }}>Total Votes: {totalVotes}</Typography>
           {poll.options.map((option: any, index: number) => (
             <Box key={index} style={{ marginTop: 16 }}>
