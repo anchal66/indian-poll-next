@@ -1,10 +1,26 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useAuth } from '../services/authService';
 import { getPollByUrl, votePoll } from '../services/pollService';
-import { Container, Typography, Card, CardContent, Button, Dialog, DialogTitle, DialogContent, DialogActions, RadioGroup, FormControlLabel, Radio, LinearProgress, Box } from '@mui/material';
+import {
+  Container,
+  Typography,
+  Card,
+  CardContent,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  LinearProgress,
+  Box,
+  useTheme,
+} from '@mui/material';
 import ShareButton from '../components/ShareButton';
 
 interface PollDescriptionProps {
@@ -12,9 +28,7 @@ interface PollDescriptionProps {
 }
 
 const PollDescription: React.FC<PollDescriptionProps> = ({ description }) => (
-  <div style={{ whiteSpace: 'pre-line' }}>
-    {description}
-  </div>
+  <div style={{ whiteSpace: 'pre-line' }}>{description}</div>
 );
 
 interface Poll {
@@ -22,7 +36,7 @@ interface Poll {
   title: string;
   description: string;
   url: string;
-  options: { text: string, votes: number }[];
+  options: { text: string; votes: number }[];
   sharingMessage: string;
   imageUrl?: string;
   requireSignIn: boolean;
@@ -36,15 +50,17 @@ interface PollPageProps {
 const PollPage: React.FC<PollPageProps> = ({ poll: initialPoll }) => {
   const router = useRouter();
   const { user, googleSignIn } = useAuth();
-  const [poll, setPoll] = React.useState(initialPoll);
-  const [totalVotes, setTotalVotes] = React.useState(0);
-  const [open, setOpen] = React.useState(false);
-  const [selectedOption, setSelectedOption] = React.useState<number | null>(null);
-  const [showCount, setShowCount] = React.useState<boolean>(false);
-  const [hasVoted, setHasVoted] = React.useState<boolean>(false);
-  const [shareUrl, setShareUrl] = React.useState('');
+  const [poll, setPoll] = useState(initialPoll);
+  const [totalVotes, setTotalVotes] = useState(0);
+  const [open, setOpen] = useState(false);
+  const [selectedOption, setSelectedOption] = useState<number | null>(null);
+  const [showCount, setShowCount] = useState<boolean>(false);
+  const [hasVoted, setHasVoted] = useState<boolean>(false);
+  const [shareUrl, setShareUrl] = useState('');
 
-  React.useEffect(() => {
+  const theme = useTheme();
+
+  useEffect(() => {
     if (poll) {
       const total = poll.options.reduce((sum, option) => sum + option.votes, 0);
       setTotalVotes(total);
@@ -129,15 +145,25 @@ const PollPage: React.FC<PollPageProps> = ({ poll: initialPoll }) => {
             >
               Vote
             </Button>
-            {hasVoted && <Typography color="error" style={{ marginTop: 8 }}>You have already voted!</Typography>}
+            {hasVoted && (
+              <Typography color="error" style={{ marginTop: 8 }}>
+                You have already voted!
+              </Typography>
+            )}
             <Typography style={{ marginTop: 16 }}>Total Votes: {totalVotes}</Typography>
             {poll.options.map((option, index) => (
               <Box key={index} style={{ marginTop: 16 }}>
                 <Typography>{option.text}</Typography>
                 <LinearProgress variant="determinate" value={getVotePercentage(option.votes)} />
                 <Box display="flex" justifyContent="space-between">
-                  <Typography>{showCount ? `${option.votes} votes` : `${getVotePercentage(option.votes).toFixed(2)}%`}</Typography>
-                  <Button onClick={toggleCount}>{showCount ? 'Show Percentage' : 'Show Count'}</Button>
+                  <Typography>
+                    {showCount
+                      ? `${option.votes} votes`
+                      : `${getVotePercentage(option.votes).toFixed(2)}%`}
+                  </Typography>
+                  <Button onClick={toggleCount}>
+                    {showCount ? 'Show Percentage' : 'Show Count'}
+                  </Button>
                 </Box>
               </Box>
             ))}
@@ -152,9 +178,17 @@ const PollPage: React.FC<PollPageProps> = ({ poll: initialPoll }) => {
         <Dialog open={open} onClose={handleClose}>
           <DialogTitle>Vote for an Option</DialogTitle>
           <DialogContent>
-            <RadioGroup value={selectedOption} onChange={(e) => setSelectedOption(parseInt(e.target.value, 10))}>
+            <RadioGroup
+              value={selectedOption}
+              onChange={(e) => setSelectedOption(parseInt(e.target.value, 10))}
+            >
               {poll.options.map((option, index) => (
-                <FormControlLabel key={index} value={index} control={<Radio />} label={option.text} />
+                <FormControlLabel
+                  key={index}
+                  value={index}
+                  control={<Radio />}
+                  label={option.text}
+                />
               ))}
             </RadioGroup>
           </DialogContent>
@@ -162,7 +196,12 @@ const PollPage: React.FC<PollPageProps> = ({ poll: initialPoll }) => {
             <Button onClick={handleClose} color="primary">
               Cancel
             </Button>
-            <Button onClick={handleVote} color="secondary">
+            <Button
+              onClick={handleVote}
+              color="secondary"
+              disabled={selectedOption === null}
+              style={{ backgroundColor: theme.palette.primary.main, color: theme.palette.primary.contrastText }}
+            >
               Vote
             </Button>
           </DialogActions>
