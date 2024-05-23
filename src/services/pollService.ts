@@ -29,6 +29,8 @@ export const votePoll = async (pollId: string, optionIndex: number, userId: stri
   const pollDoc = await getDoc(pollDocRef);
   if (pollDoc.exists()) {
     const pollData = pollDoc.data();
+    const deviceVotes = JSON.parse(localStorage.getItem(pollId) || '[]');
+
     if (pollData['requireSignIn']) {
       if (pollData['voters'] && pollData['voters'].includes(userId)) {
         throw new Error('User has already voted');
@@ -42,23 +44,35 @@ export const votePoll = async (pollId: string, optionIndex: number, userId: stri
         });
       }
     } else {
-      // Handle voting without sign-in
-      const deviceVotes = localStorage.getItem(pollId) || '[]';
-      const votedOptions = JSON.parse(deviceVotes);
-      if (votedOptions.length > 0) {
-        throw new Error('Device has already voted');
+      if (userId) {
+        if (pollData['voters'] && pollData['voters'].includes(userId)) {
+          throw new Error('User has already voted');
+        } else {
+          const voters = pollData['voters'] ? [...pollData['voters'], userId] : [userId];
+          const options = pollData['options'];
+          options[optionIndex].votes = (options[optionIndex].votes || 0) + 1;
+          localStorage.setItem(pollId, JSON.stringify([...deviceVotes, userId]));
+          return updateDoc(pollDocRef, {
+            options: options,
+            voters: voters
+          });
+        }
       } else {
-        votedOptions.push(optionIndex);
-        localStorage.setItem(pollId, JSON.stringify(votedOptions));
-        const options = pollData['options'];
-        options[optionIndex].votes = (options[optionIndex].votes || 0) + 1;
-        return updateDoc(pollDocRef, {
-          options: options
-        });
+        if (deviceVotes.length > 0) {
+          throw new Error('Device has already voted');
+        } else {
+          const options = pollData['options'];
+          options[optionIndex].votes = (options[optionIndex].votes || 0) + 1;
+          localStorage.setItem(pollId, JSON.stringify([null]));
+          return updateDoc(pollDocRef, {
+            options: options
+          });
+        }
       }
     }
   }
 };
+
 
 export const getMyPolls = (uid: string) => {
   const pollsCollection = collection(firestore, 'polls');

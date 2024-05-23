@@ -1,4 +1,3 @@
-// src/pages/[url].tsx
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useAuth } from '../services/authService';
@@ -20,12 +19,8 @@ const PollDetail: React.FC = () => {
     if (url) {
       getPollByUrl(url as string).then(poll => {
         setPoll({ ...poll, voters: poll.voters || [] });
-        if (poll.requireSignIn && user) {
-          setHasVoted(poll.voters.includes(user.uid));
-        } else {
-          const deviceVotes = JSON.parse(localStorage.getItem(poll.id) || '[]');
-          setHasVoted(deviceVotes.length > 0);
-        }
+        const deviceVotes = JSON.parse(localStorage.getItem(poll.id) || '[]');
+        setHasVoted(deviceVotes.includes(user ? user.uid : null));
       });
     }
   }, [url, user]);
