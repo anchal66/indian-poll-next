@@ -144,7 +144,7 @@ const PollPage: React.FC<PollPageProps> = ({ poll: initialPoll }) => {
                 style={{ marginTop: 16, padding: '10px 20px', fontSize: '16px' }}
                 disabled={hasVoted}
               >
-                Cast Your Vote
+                Vote Now
               </Button>
             </Box>
             {hasVoted && (
