@@ -1,8 +1,10 @@
+// src/pages/[url].tsx
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useAuth } from '../services/authService';
 import { getPollByUrl, votePoll } from '../services/pollService';
 import { Container, Typography, Card, CardContent, Button, Dialog, DialogTitle, DialogContent, DialogActions, RadioGroup, FormControlLabel, Radio, LinearProgress, Box } from '@mui/material';
+import ShareButton from '../components/ShareButton';
 
 const PollDetail: React.FC = () => {
   const router = useRouter();
@@ -93,6 +95,12 @@ const PollDetail: React.FC = () => {
               </Box>
             </Box>
           ))}
+          <ShareButton
+            title={poll.title}
+            url={`${window.location.origin}/${poll.url}`}
+            sharingMessage={poll.sharingMessage}
+            imageUrl={poll.imageUrl || '/logo.png'}
+          />
         </CardContent>
       </Card>
       <Dialog open={open} onClose={handleClose}>

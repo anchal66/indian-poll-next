@@ -16,6 +16,7 @@ const CreatePoll: React.FC = () => {
     creatorUid: '',
     url: '',
     requireSignIn: false,
+    imageUrl: '' // New field for image URL
   });
   const [urlError, setUrlError] = useState('');
 
@@ -123,6 +124,14 @@ const CreatePoll: React.FC = () => {
           required
           error={!!urlError}
           helperText={urlError}
+          style={{ marginTop: 16 }}
+        />
+        <TextField
+          label="Image URL"
+          name="imageUrl"
+          value={pollData.imageUrl}
+          onChange={handleInputChange}
+          fullWidth
           style={{ marginTop: 16 }}
         />
         <FormControlLabel

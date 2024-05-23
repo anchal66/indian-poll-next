@@ -27,3 +27,7 @@ a {
 .MuiContainer-root {
   padding-top: 24px;
 }
+
+.container {
+  margin-top: 80px; /* Adjust this value to increase/decrease the gap */
+}

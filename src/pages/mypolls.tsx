@@ -4,6 +4,8 @@ import { useAuth } from '../services/authService';
 import { getMyPolls, deletePoll } from '../services/pollService';
 import { useRouter } from 'next/router';
 import { Container, Typography, Card, CardContent, Button, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import ShareButton from '../components/ShareButton';
+import Link from 'next/link';
 
 const MyPolls: React.FC = () => {
   const { user, googleSignIn } = useAuth();
@@ -66,6 +68,12 @@ const MyPolls: React.FC = () => {
               <Button onClick={() => handleDelete(poll.id)} style={{ marginTop: 8 }}>
                 Delete
               </Button>
+              <ShareButton
+                title={poll.title}
+                url={`${window.location.origin}/${poll.url}`}
+                sharingMessage={poll.sharingMessage}
+                imageUrl={poll.imageUrl || '/logo.png'}
+              />
             </CardContent>
           </Card>
         ))
