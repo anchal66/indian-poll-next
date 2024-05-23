@@ -136,17 +136,19 @@ const PollPage: React.FC<PollPageProps> = ({ poll: initialPoll }) => {
           <CardContent>
             <Typography variant="h4">{poll.title}</Typography>
             <PollDescription description={poll.description} />
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleOpen}
-              style={{ marginTop: 16 }}
-              disabled={hasVoted}
-            >
-              Vote
-            </Button>
+            <Box display="flex" justifyContent="center" mt={2}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleOpen}
+                style={{ marginTop: 16, padding: '10px 20px', fontSize: '16px' }}
+                disabled={hasVoted}
+              >
+                Cast Your Vote
+              </Button>
+            </Box>
             {hasVoted && (
-              <Typography color="error" style={{ marginTop: 8 }}>
+              <Typography color="error" style={{ marginTop: 8, textAlign: 'center' }}>
                 You have already voted!
               </Typography>
             )}
@@ -201,9 +203,14 @@ const PollPage: React.FC<PollPageProps> = ({ poll: initialPoll }) => {
               onClick={handleVote}
               color="secondary"
               disabled={selectedOption === null}
-              style={{ backgroundColor: theme.palette.primary.main, color: theme.palette.primary.contrastText }}
+              style={{ 
+                backgroundColor: theme.palette.primary.main, 
+                color: theme.palette.primary.contrastText,
+                padding: '10px 20px',
+                fontSize: '16px'
+              }}
             >
-              Vote
+              Submit Vote
             </Button>
           </DialogActions>
         </Dialog>
