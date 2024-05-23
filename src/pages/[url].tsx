@@ -131,7 +131,7 @@ const PollPage: React.FC<PollPageProps> = ({ poll: initialPoll }) => {
         <meta name="twitter:image" content={poll.imageUrl || '/logo.png'} />
         <meta name="twitter:url" content={`https://indianvotes.com/${poll.url}`} />
       </Head>
-      <Container className="container" style={{ marginTop: '80px' }}>
+      <Container className="container" style={{ marginTop: '20px', marginBottom: '20px' }}>
         <Card>
           <CardContent>
             <Typography variant="h4">{poll.title}</Typography>
@@ -144,7 +144,7 @@ const PollPage: React.FC<PollPageProps> = ({ poll: initialPoll }) => {
                 style={{ marginTop: 16, padding: '10px 20px', fontSize: '16px' }}
                 disabled={hasVoted}
               >
-                Vote Now
+                Cast Your Vote
               </Button>
             </Box>
             {hasVoted && (
