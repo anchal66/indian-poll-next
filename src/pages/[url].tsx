@@ -150,20 +150,21 @@ const PollPage: React.FC<PollPageProps> = ({ poll: initialPoll }) => {
                 You have already voted!
               </Typography>
             )}
-            <Typography style={{ marginTop: 16 }}>Total Votes: {totalVotes}</Typography>
+            <Typography
+              variant="h5"
+              align="center"
+              style={{ marginTop: 16, fontWeight: 'bold' }}
+            >
+              Total Votes: {totalVotes}
+            </Typography>
             {poll.options.map((option, index) => (
               <Box key={index} style={{ marginTop: 16 }}>
                 <Typography>{option.text}</Typography>
                 <LinearProgress variant="determinate" value={getVotePercentage(option.votes)} />
-                <Box display="flex" justifyContent="space-between">
-                  <Typography>
-                    {showCount
-                      ? `${option.votes} votes`
-                      : `${getVotePercentage(option.votes).toFixed(2)}%`}
+                <Box display="flex" justifyContent="space-between" alignItems="center">
+                  <Typography onClick={toggleCount} style={{ cursor: 'pointer' }}>
+                    {showCount ? `${option.votes} votes` : `${getVotePercentage(option.votes).toFixed(2)}%`}
                   </Typography>
-                  <Button onClick={toggleCount}>
-                    {showCount ? 'Show Percentage' : 'Show Count'}
-                  </Button>
                 </Box>
               </Box>
             ))}
