@@ -1,9 +1,10 @@
-// src/pages/_app.tsx
 import React from 'react';
 import { AppProps } from 'next/app';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider, createTheme, responsiveFontSizes } from '@mui/material/styles';
 import Header from '../components/Header';
+import Footer from '../components/Footer';
+import { SnackbarProvider } from '../context/SnackbarContext';
 import '../styles/globals.css'; // Import global styles here
 
 let theme = createTheme({
@@ -37,9 +38,16 @@ theme = responsiveFontSizes(theme);
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Header />
-      <Component {...pageProps} />
+      <SnackbarProvider>
+        <CssBaseline />
+        <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+          <Header />
+          <main>
+            <Component {...pageProps} />
+          </main>
+          <Footer />
+        </div>
+      </SnackbarProvider>
     </ThemeProvider>
   );
 }

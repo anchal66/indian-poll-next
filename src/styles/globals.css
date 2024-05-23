@@ -5,6 +5,15 @@ body {
   padding: 0;
   background-color: #1a1a1a;  /* Slightly lighter than pure black */
   color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+#__next {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 a {
@@ -24,10 +33,15 @@ a {
   margin-bottom: 16px;
 }
 
-.MuiContainer-root {
-  padding-top: 24px;
+.container {
+  margin-top: 40px; /* Adjust this value to increase/decrease the gap */
 }
 
-.container {
-  margin-top: 80px; /* Adjust this value to increase/decrease the gap */
+main {
+  flex: 1;
+  padding-top: 18px; /* Add padding only to the main content area */
+}
+
+footer {
+  margin-top: auto;
 }

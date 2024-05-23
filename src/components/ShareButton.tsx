@@ -1,7 +1,7 @@
-// src/components/ShareButton.tsx
 import React from 'react';
 import { Button } from '@mui/material';
 import ShareIcon from '@mui/icons-material/Share';
+import { useSnackbar } from '../context/SnackbarContext';
 
 interface ShareButtonProps {
   title: string;
@@ -11,6 +11,7 @@ interface ShareButtonProps {
 }
 
 const ShareButton: React.FC<ShareButtonProps> = ({ title, url, sharingMessage, imageUrl }) => {
+  const { showMessage } = useSnackbar();
   const defaultImageUrl = '/logo.png'; // Path to the default image in the public directory
 
   const handleShare = async () => {
@@ -22,16 +23,19 @@ const ShareButton: React.FC<ShareButtonProps> = ({ title, url, sharingMessage, i
           title: title,
           text: fullMessage,
         });
+        showMessage('Content shared successfully!', 'success');
       } catch (error) {
         console.error('Error sharing', error);
+        showMessage('Error sharing content.', 'error');
       }
     } else {
       // Fallback: Copy to clipboard
       try {
         await navigator.clipboard.writeText(fullMessage);
-        alert('Sharing message copied to clipboard');
+        showMessage('Sharing message copied to clipboard', 'success');
       } catch (error) {
         console.error('Could not copy text: ', error);
+        showMessage('Failed to copy message to clipboard.', 'error');
       }
     }
   };
