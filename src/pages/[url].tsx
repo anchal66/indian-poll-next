@@ -118,6 +118,35 @@ const PollPage: React.FC<PollPageProps> = ({ poll: initialPoll }) => {
 
   if (!poll) return <Typography>Loading...</Typography>;
 
+  const structuredData = {
+    "@context": "http://schema.org",
+    "@type": "Question",
+    "name": poll.title,
+    "text": poll.description,
+    "url": `https://indianvotes.com/${poll.url}`,
+    "dateCreated": new Date().toISOString(),
+    "author": {
+      "@type": "Person",
+      "name": "Indian Votes"
+    },
+    "answerCount": poll.options.length,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": poll.options[0]?.text || '',
+      "upvoteCount": poll.options[0]?.votes || 0,
+    },
+    "suggestedAnswer": poll.options.map((option, index) => ({
+      "@type": "Answer",
+      "text": option.text,
+      "upvoteCount": option.votes,
+    })),
+    "interactionStatistic": {
+      "@type": "InteractionCounter",
+      "interactionType": { "@type": "VoteAction" },
+      "userInteractionCount": totalVotes,
+    },
+  };
+
   return (
     <>
       <Head>
@@ -134,6 +163,7 @@ const PollPage: React.FC<PollPageProps> = ({ poll: initialPoll }) => {
         <meta name="twitter:description" content={poll.description} />
         <meta name="twitter:image" content={poll.imageUrl || '/logo.png'} />
         <meta name="twitter:url" content={`https://indianvotes.com/${poll.url}`} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
       </Head>
       <Container className="container" style={{ marginTop: '20px', marginBottom: '20px' }}>
         <Card>
