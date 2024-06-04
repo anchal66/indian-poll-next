@@ -22,11 +22,13 @@ a {
 }
 
 .MuiCardContent-root {
-  padding-bottom: 16px !important;
+  padding-bottom: 20px !important;
+  margin-bottom: 10px !important;
 }
 
 .MuiButton-root {
   margin: 8px;
+  margin-top: 20px;
 }
 
 .MuiTypography-h4 {
