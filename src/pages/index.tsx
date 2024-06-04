@@ -21,7 +21,7 @@ const Home: React.FC = () => {
   return (
     <Container className="container" sx={{ mt: 8, color: '#fff' }}>
       <Head>
-        <title>Indian Votes | India's largest Election Poll</title>
+        <title>Indian Votes | India&#x27;s largest Election Poll</title>
         <meta name="description" content="Indian Votes is an open-source polling website where you can sign in and create your own polls. Share your polls publicly and engage your community. Participate in the latest polls and make your voice heard on Indian Votes. Our platform ensures that all polls are SEO optimized and can be easily accessed across the global internet." />
         <meta property="og:title" content="Indian Votes | India's largest Election Poll" />
         <meta property="og:description" content="Indian Votes is an open-source polling website where you can sign in and create your own polls. Share your polls publicly and engage your community. Participate in the latest polls and make your voice heard on Indian Votes. Our platform ensures that all polls are SEO optimized and can be easily accessed across the global internet." />
