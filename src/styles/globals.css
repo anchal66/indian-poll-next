@@ -45,3 +45,11 @@ main {
 footer {
   margin-top: auto;
 }
+
+ul {
+  padding-left: 20px;
+}
+
+li {
+  margin-bottom: 10px;
+}
